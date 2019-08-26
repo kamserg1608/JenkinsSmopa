@@ -34,40 +34,6 @@ String separatorStyle2 = '''
 properties([
     parameters([
         [
-            $class: 'ParameterSeparatorDefinition'    ,
-            name: 'TEST_SECTION'                      ,
-            sectionHeader: 'Test Section'             ,
-            separatorStyle: separatorStyle            ,
-            sectionHeaderStyle: sectionHeaderStyle
-        ],
-    /*Charter01*/  booleanParam( defaultValue: false ,
-                        description: 
-                            '''01.Панорамный анализ.
-                            C1798-C1806, C1871-C1877, C1812-C1815,C1807-C1811,
-                            C1824-C1825, C1821-C1822, C1828, C1826, C2657-C2658, C1827 ''' ,
-                    name: 'test_01_PanoramicAnalysis'),
-    /*Charter02*/   booleanParam( defaultValue: false ,
-                        description: 
-                            '''02.Адаптация к окружающей радиообстановке.
-                            C1789''' ,
-                    name: 'test_02_adaptationToSurroundingRadioEnvironment'),
-    /*Charter03*/   booleanParam( defaultValue: false ,
-                        description: 
-                            '''03.Выявление изменений в радиообстановке.
-                            C1784, C1785''' ,
-                        name: 'test_03_detectionOfChangesInRadioEnvironment'),
-    /*Charter10*/   booleanParam( defaultValue: false ,
-                        description: 
-                            '''10.Измерение параметров радиосигналов
-                            C1662-C1669, C1673, C2585, C2589, C2592-C2595,
-                            C2602-C2609, C3561, C145260-C145285''' ,
-                        name: 'test_10_measurementOfRadioSignalParameters'),
-    /*Charter12*/  booleanParam( defaultValue: false ,
-                        description: 
-                            '''12.Пользовательские настройки интерфейса
-                                C1648''' ,
-                        name: 'test_12_userInterfaceSettings'),                        
-        [
             $class: 'ParameterSeparatorDefinition'        ,
             name: 'SLAVE_AGENT_SECTION'                   ,
             sectionHeader: 'Slave agent section'          ,
@@ -258,99 +224,7 @@ choice(       choices: ['''@GENERATOR'''                                        
                         '''@SUBSECTION_10_02_09'''                                                                                                                                                          ,                                                
                         '''@SECTION_12'''                                                                                                                                                                   ,
                         '''@SUBSECTION_12_01'''                                                                                                                                                             ,
-                        '''@C1648'''                                                                                                                                                                        ,                                                                                                                                                         ,
-                        '''StartOfNightTests|killAllProcess'''                                                                                                                                              ,
-                        '''StartOfNightTests|setProjectParametrs'''                                                                                                                                         ,
-                        '''StartOfNightTests|commonLaunchPowerShell_1_(Установка программы)'''                                                                                                              ,
-                        '''StartOfNightTests|dispAndSmopaStart_2_1'''                                                                                                                                       ,
-                        '''StartOfNightTests|takeVersionOnApplication'''                                                                                                                                    ,
-                        '''StartOfNightTests|checkAvailabilityGenerator_(Проверка подключения генератора)'''                                                                                                ,
-                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1798_(Создание задания на диапазоны перестройки частоты)'''                                                      ,
-                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1799_(Редактирование задания на диапазоны перестройки частоты)'''                                                ,
-                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1800_(Загрузка задания на диапазоны перестройки частоты из файла)'''                                             ,
-                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1801_(Удаление задания на диапазоны перестройки частоты)'''                                                      ,
-                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1802_(Удаление диапазона перестройки частоты из задания)'''                                                      ,
-                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1803_(Сохранение задания на диапазоны перестройки частоты в файл)'''                                             ,
-                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1804_(Создание задания с большим количеством диапазонов)'''                                                      ,
-                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1805_(Создание задания с пересекающимися диапазонами)'''                                                         ,
-                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1806_(Cоздание диапазона с параметрами Fmin>Fmax)'''                                                             ,
-                        '''test_01_panoramicAnalysis|02)_retuningTheMarkerFrequencyInSpectrumMode|english|C1871_(Создание задания на диапазоны перестройки частоты)'''                                      ,
-                        '''test_01_panoramicAnalysis|02)_retuningTheMarkerFrequencyInSpectrumMode|english|C1872_(Редактирование задания на диапазоны перестройки частоты)'''                                ,
-                        '''test_01_panoramicAnalysis|02)_retuningTheMarkerFrequencyInSpectrumMode|english|C1873_(Удаление задания на диапазоны перестройки частоты)'''                                      ,
-                        '''test_01_panoramicAnalysis|02)_retuningTheMarkerFrequencyInSpectrumMode|english|C1874_(Удаление диапазона перестройки частоты из задания)'''                                      ,                        
-                        '''test_01_panoramicAnalysis|02)_retuningTheMarkerFrequencyInSpectrumMode|english|C1875_(Создание задания с большим количеством диапазонов)'''                                      ,
-                        '''test_01_panoramicAnalysis|02)_retuningTheMarkerFrequencyInSpectrumMode|english|C1876_(Создание задания с пересекающимися диапазонами)'''                                         ,                        
-                        '''test_01_panoramicAnalysis|02)_retuningTheMarkerFrequencyInSpectrumMode|english|C1877_(Cоздание диапазона с параметрами Fmin>Fmax)'''                                             ,  
-                        '''test_01_panoramicAnalysis|03)_reTuningMarkerFrequencyInSpectrumMode|english|C1812_(Перестройка частоты маркера по клику)'''                                                      ,                          
-                        '''test_01_panoramicAnalysis|03)_reTuningMarkerFrequencyInSpectrumMode|english|C1813_(Перестройка частоты маркера путем ввода значения частоты в поле "Настройка частоты")'''       , 
-                        '''test_01_panoramicAnalysis|03)_reTuningMarkerFrequencyInSpectrumMode|english|C1814_(Перестройка маркера на частоту с наибольшим уровнем)'''                                       , 
-                        '''test_01_panoramicAnalysis|03)_reTuningMarkerFrequencyInSpectrumMode|english|C1815_(Изменение порога с помощью мыши)'''                                                           , 
-                        '''test_01_panoramicAnalysis|04)_reTuningMarkerFrequencyInMeasurementMode|english|C1807_(Перестройка частоты маркера по клику)'''                                                   , 
-                        '''test_01_panoramicAnalysis|04)_reTuningMarkerFrequencyInMeasurementMode|english|C1808_(Перестройка частоты маркера путем ввода значения частоты в поле "Настройка частоты")'''    , 
-                        '''test_01_panoramicAnalysis|04)_reTuningMarkerFrequencyInMeasurementMode|english|C1809_(Перестройка маркера на частоту с наибольшим уровнем)'''                                    , 
-                        '''test_01_panoramicAnalysis|04)_reTuningMarkerFrequencyInMeasurementMode|english|C1810_(Перемещение маркера с помощью клавиатуры)'''                                               , 
-                        '''test_01_panoramicAnalysis|04)_reTuningMarkerFrequencyInMeasurementMode|english|C1811_(Перемещение дополнительного маркера с помощью мыши)'''                                     ,                       
-                        '''test_01_panoramicAnalysis|06)_displaySpectrogramInSpectrumWindowOfSpectrumMode|english|С1824_(Аппаратные методы отображения спектра.)'''                                         ,                        
-                        '''test_01_panoramicAnalysis|06)_displaySpectrogramInSpectrumWindowOfSpectrumMode|english|C1825_(Отображение накопленного спектра.)'''                                              ,  
-                        '''test_01_panoramicAnalysis|07)_displaySpectMeasurementWindowMeasurementMode|english|C1821_(Аппаратные методы отображения спектра.)'''                                             , 
-                        '''test_01_panoramicAnalysis|07)_displaySpectMeasurementWindowMeasurementMode|english|C1822_(Отображение накопленного спектра.)'''                                                  , 
-                        '''test_01_panoramicAnalysis|09)_ControlOfAttenuators|english|C1826_(Управление аттенюаторами с шагом 10дБ режим Спектр)'''                                                         ,                         
-                        '''test_01_panoramicAnalysis|09)_ControlOfAttenuators|english|C2657_(Управление аттенюаторами с шагом 10дБ режим Измерение)'''                                                      ,            
-                        '''test_01_panoramicAnalysis|09)_ControlOfAttenuators|english|C2658_(Управление аттенюаторами с шагом 10дБ режим Панорама)'''                                                       ,            
-                        '''test_01_panoramicAnalysis|10)_amplifierControl|english|C1827_(Управление усилителями)'''                                                                                         ,                                    
-                        '''test_02_adaptationToSurroundingRadioEnvironment|01)_safeAccumulatedSpectrum|C1789_(Сохранение и загрузка накопленного спектра)'''                                                ,                        
-                        '''test_03_detectionOfChangesInRadioEnvironment|02)_searchWithScan|C1784_(Поиск с обзором обнаруженных каналов)'''                                                                  ,
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1662_(Измерение частоты (по временной выборке)'''                                        ,                        
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1663_(Измерение частоты (максимум) с помощью генератора.)'''                             ,                        
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1664_(Измерение частоты (оценка частоты ЧМ) с помощью генератора.)'''                    ,                        
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1665_(Измерение частоты (авто) с помощью генератора)'''                                  ,                        
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1666_(Измерение частоты (центральная частота ШПС) с помощью генератора)'''               ,                                                
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1667_(	Измерение частоты (ММС) с помощью генератора.)'''                               ,                                                
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1668_(Измерение частоты (ФМн) с помощью генератора)'''                                   ,                
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1669_(Измерение частоты (ЧМн) с помощью генератора)'''                                   ,                        
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|02)_checkAccumulationDeviation|C1673_(Накопление данных о девиации с помощью генератора.)'''                        ,                        
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|03)_measurementFieldStrength|C2585_(Измерение напряженности (пиковый уровень)'''                                    ,                        
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|03)_measurementFieldStrength|C2589_(Измерение напряженности (энергетический)'''                                     ,                        
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|03)_measurementFieldStrength|C2592_(	Измерение напряженности (детектор средних значений)'''                      ,                        
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|03)_measurementFieldStrength|C2593_(Измерение напряженности (среднеквадратический детектор)'''                      ,                        
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|03)_measurementFieldStrength|C2594_(Измерение напряженности (квазипиковый детектор)'''                              ,                        
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|03)_measurementFieldStrength|C2595_(Измерение напряженности (пиковый детектор)'''                                   ,                        
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|04)_PMM(powerFluxDensity)|C2596_(ППМ (пиковый уровень)'''                                                           ,                        
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|04)_PMM(powerFluxDensity)|C2602_(ППМ (энергетический)'''                                                            ,                        
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|04)_PMM(powerFluxDensity)|C2603_(ППМ (среднеквадратический детектор)'''                                             ,                                                
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|04)_PMM(powerFluxDensity)|C2604_(ППМ (детектор средних значений)'''                                                 ,                                                
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|04)_PMM(powerFluxDensity)|C2605_(ППМ (квазипиковый детектор)'''                                                     ,                                                
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|04)_PMM(powerFluxDensity)|C2606_(ППМ (пиковый детектор)'''                                                          ,                                                
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|05)_ measurementBand|C2607_(X дБ (накопленный спектр)'''                                                            ,                                                
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|05)_ measurementBand|C2608_(Бета/2)'''                                                                              ,                                                
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|05)_ measurementBand|C2609_(Измерение полосы в режиме "Спектр")'''                                                  ,                                                                        
-                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|05)_ measurementBand|C3561_(	X дБ (усредненный спектр)'''                                                        ,                                                                        
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|01)_deviation|C145260_(Девиация 0.5 кГц Частота 500 МГц Спектроскоп 12.5 кГц)'''                                        ,                                                                                                
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|01)_deviation|C145261_(Девиация 5 кГц Частота 500 МГц Спектроскоп 25 кГц)'''                                            ,                                                                                                
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|01)_deviation|C145262_(Девиация 50 кГц Частота 500 МГц Спектроскоп 250.98 кГц)'''                                       ,                                                                                                
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|01)_deviation|C145263_(Девиация 100 кГц Частота 500 МГц Спектроскоп 250.98 кГц)'''                                      ,                                                                                                
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|01)_deviation|C145264_(Девиация 130 кГц Частота 500 МГц Спектроскоп 320 кГц)'''                                         ,                                                                                                
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|02)_coefficientAM|C145265_(Коэффициент 0.1 Частота 500 МГц Спектроскоп 6.25 кГц)'''                                     ,                                                                                                
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|02)_coefficientAM|C145266_(Коэффициент 0.3 Частота 500 МГц Спектроскоп 6.25 кГц)'''                                     ,                                                                                                
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|02)_coefficientAM|C145267_(Коэффициент 0.5 Частота 500 МГц Спектроскоп 6.25 кГц)'''                                     ,                                                                                                
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|02)_coefficientAM|C145268_(Коэффициент 0.7 Частота 500 МГц Спектроскоп 6.25 кГц)'''                                     ,                                                                                                
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|02)_coefficientAM|C145269_(Коэффициент 0.9 Частота 500 МГц Спектроскоп 6.25 кГц)'''                                     ,                                                                                                
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|03)_subcurrier|C145275_(Поднесущая 19 кГц Частота 100 МГц Спектроскоп 320 кГц)'''                                       ,                                                                                                                        
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|03)_subcurrier|C145276_(Поднесущая 31.25 кГц Частота 100 МГц Спектроскоп 320 кГц)'''                                    ,  
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|04)_frequencySeparationFSK|C145270_(Скорость 0.11 кБод Девиация 0.22 кГц Частота 500 МГц Спектроскоп 6.25 кГц)'''       ,  
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|04)_frequencySeparationFSK|C145271_(Скорость 0.25 кБод Девиация 2.5 кГц Частота 500 МГц Спектроскоп 12.5 кГц)'''        ,  
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|04)_frequencySeparationFSK|C145272_(Скорость 1.25 кБод Девиация 25 кГц Частота 500 МГц Спектроскоп 100 кГц)'''          ,  
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|04)_frequencySeparationFSK|C145273_(Скорость 1.25 кБод Девиация 50 кГц Частота 500 МГц Спектроскоп 250.98 кГц)'''       ,  
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|04)_frequencySeparationFSK|C145274_(Скорость 2.5 кБод Девиация 100 кГц Частота 500 МГц Спектроскоп 320 кГц)'''          ,  
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|05)_modulationRateGMSK|C145277_(Скорость 2.4 кБод Частота 500 МГц Спектроскоп 6.25 кГц)'''                              ,  
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|05)_modulationRateGMSK|C145278_(Скорость 1000 кБод Частота 500 МГц Спектроскоп 2000 кГц)'''                             ,  
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|06)_modulationRateQPSK|C145279_(Скорость 0.1 кБод Частота 500 МГц Спектроскоп 6.25 кГц)'''                              ,  
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|06)_modulationRateQPSK|C145280_(Скорость 23 кБод Частота 500 МГц Спектроскоп 100 кГц)'''                                ,  
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|07)_modulationRateFSK|C145281_(Скорость 0.1 кБод Девиация 0.22 кГц Частота 500 МГц Спектроскоп 6.25 кГц)'''             ,  
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|07)_modulationRateFSK|C145282_(Скорость 50 кБод Девиация 100 кГц Частота 500 МГц Спектроскоп 320 кГц)'''                ,                          
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|07)_modulationRateFSK|C145283_(Скорость 0.11 кБод Девиация 0.22 кГц Частота 500 МГц Спектроскоп 6.25 кГц)'''            ,  
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|08)_frequencyQPSK|C145284_(Частота 500 МГц Спектроскоп 6.25 кГц)'''                                                     ,  
-                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|09)_frequencyFSK|C145285_(Частота 500 МГц Спектроскоп 25 кГц)'''                                     
+                        '''@C1648'''                                                                                                                                                                                                                                                                                                                                
                         ],                  
                                            description: 'Select Test Complet Test Item'                , name: 'testcompleteTestItem')          ,
 choice(       choices: ['NO', 'YES']     , description: 'Activate debug mode Test Items'               , name: 'debugMode')                                            
@@ -420,56 +294,7 @@ pipeline{
                     ALLPASS           = "${ALLPASS}" 
                     ProjectParameters = "${ProjectParameters}"
                     echo "${ProjectParameters}"
-                    if("${test_01_PanoramicAnalysis}" == "true") {
-                      ALLPASS = "${ALLPASS}"                                        +
-                                ";section01                      = NO  || YES\r\n"  +
-                                "section01=YES\r\n"
-                    } else {
-                      ALLPASS = "${ALLPASS}"                                        +
-                                ";section01                      = NO  || YES\r\n"  +
-                                "section01=NO\r\n"        
-                    }
                     
-                    // echo "${ALLPASS}"
-                    if("${test_02_adaptationToSurroundingRadioEnvironment}" == "true") {
-                      ALLPASS = "${ALLPASS}"                                        +
-                                ";section02                      = NO  || YES\r\n"  +
-                                "section02=YES\r\n"
-                    } else {
-                      ALLPASS = "${ALLPASS}"                                        +
-                                ";section02                      = NO  || YES\r\n"  +
-                                "section02=NO\r\n"        
-                    }
-                    // echo "${ALLPASS}"
-                    if("${test_03_detectionOfChangesInRadioEnvironment}" == "true") {
-                      ALLPASS = "${ALLPASS}"                                        +
-                                ";section03                      = NO  || YES\r\n"  +
-                                "section03=YES\r\n"
-                    } else {
-                      ALLPASS = "${ALLPASS}"                                        +
-                                ";section03                      = NO  || YES\r\n"  +
-                                "section03=NO\r\n"        
-                    }
-                    // echo "${ALLPASS}"
-                    if("${test_10_measurementOfRadioSignalParameters}" == "true") {
-                      ALLPASS = "${ALLPASS}"                                        +
-                                ";section10                      = NO  || YES\r\n"  +                    
-                                "section10=YES\r\n"
-                    } else {
-                      ALLPASS = "${ALLPASS}"                                        +
-                                ";section10                      = NO  || YES\r\n"  +                      
-                                "section10=NO\r\n"        
-                    }
-                    // echo "${ALLPASS}"
-                    if("${test_12_userInterfaceSettings}" == "true") {
-                      ALLPASS = "${ALLPASS}"                                        +
-                                ";section12                      = NO  || YES\r\n"  +                      
-                                "section12=YES\r\n"
-                    } else {
-                      ALLPASS = "${ALLPASS}"                                        +
-                                ";section12                      = NO  || YES\r\n"  +                      
-                                "section12=NO\r\n"        
-                    }
                     // echo "${ALLPASS}"
                     if("${debugMode}" == "YES") {
                       ALLPASS = "${ALLPASS}"                                                                    +
