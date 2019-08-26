@@ -1,0 +1,692 @@
+String sectionHeaderStyle = '''
+    color: white;
+    background: green;
+    font-family: Roboto, sans-serif !important;
+    padding: 5px;
+    text-align: center;
+'''
+String sectionHeaderStyle2 = '''
+    color: white;
+    background: blue;
+    font-family: Roboto, sans-serif !important;
+    padding: 5px;
+    text-align: center;
+'''
+
+
+String separatorStyle = '''
+    margin-top:10px;
+    margin-bottom:10px;
+    border: 0 none;
+    color: red;
+    background-color: red;
+    height:4px;
+'''
+String separatorStyle2 = '''
+    margin-top:0px;
+    margin-bottom:0px;
+    border: 0 none;
+    color: red;
+    background-color: red;
+    height:0px;
+'''
+
+properties([
+    parameters([
+        [
+            $class: 'ParameterSeparatorDefinition'    ,
+            name: 'TEST_SECTION'                      ,
+            sectionHeader: 'Test Section'             ,
+            separatorStyle: separatorStyle            ,
+            sectionHeaderStyle: sectionHeaderStyle
+        ],
+    /*Charter01*/  booleanParam( defaultValue: false ,
+                        description: 
+                            '''01.Панорамный анализ.
+                            C1798-C1806, C1871-C1877, C1812-C1815,C1807-C1811,
+                            C1824-C1825, C1821-C1822, C1828, C1826, C2657-C2658, C1827 ''' ,
+                    name: 'test_01_PanoramicAnalysis'),
+    /*Charter02*/   booleanParam( defaultValue: false ,
+                        description: 
+                            '''02.Адаптация к окружающей радиообстановке.
+                            C1789''' ,
+                    name: 'test_02_adaptationToSurroundingRadioEnvironment'),
+    /*Charter03*/   booleanParam( defaultValue: false ,
+                        description: 
+                            '''03.Выявление изменений в радиообстановке.
+                            C1784, C1785''' ,
+                        name: 'test_03_detectionOfChangesInRadioEnvironment'),
+    /*Charter10*/   booleanParam( defaultValue: false ,
+                        description: 
+                            '''10.Измерение параметров радиосигналов
+                            C1662-C1669, C1673, C2585, C2589, C2592-C2595,
+                            C2602-C2609, C3561, C145260-C145285''' ,
+                        name: 'test_10_measurementOfRadioSignalParameters'),
+    /*Charter12*/  booleanParam( defaultValue: false ,
+                        description: 
+                            '''12.Пользовательские настройки интерфейса
+                                C1648''' ,
+                        name: 'test_12_userInterfaceSettings'),                        
+        [
+            $class: 'ParameterSeparatorDefinition'        ,
+            name: 'SLAVE_AGENT_SECTION'                   ,
+            sectionHeader: 'Slave agent section'          ,
+            separatorStyle: separatorStyle                ,
+            sectionHeaderStyle: sectionHeaderStyle
+        ],
+choice(       choices: ['arg_M2', 'arg_IS']         , description: 'Select slave agent machine'     , name: 'slaveAgent'),
+        [
+            $class: 'ParameterSeparatorDefinition'        ,
+            name: 'EQUIPMENT_SECTION'                     ,
+            sectionHeader: 'Equipment section'            ,
+            separatorStyle: separatorStyle                ,
+            sectionHeaderStyle: sectionHeaderStyle
+        ],
+string(       defaultValue: '.lastSuccessful?branch=ReleaseCandidate'   , description: '''Install of a specific version of ArkSoft
+sample :    .lastSuccessful?branch=ReleaseCandidate or 290-11-1424'''                                                       , name: 'versionARKSoft')                   ,        
+choice(       choices: ['PAI', 'PA', 'PPK']                             , description: 'Select Application version'         , name: 'defaultVersionOfTheApplication')   ,
+choice(       choices: ['M2', 'IS', 'RP3M']                             , description: 'Select Software version'            , name: 'defaultVersionOfTheSoftware')      ,
+choice(       choices: ['USB', 'MODEL', 'ETHERNET']                     , description: 'Select Type Of Equipment'           , name: 'defaultTypeOfEquipment')           ,
+choice(       choices: ['ARGAMAK_+', 'IS']                              , description: 'Select Type Of Equipment Model'     , name: 'defaultVersionOfModel')            ,
+choice(       choices: ['NO', '172.30.11.27']                           , description: 'Select address host'                , name: 'addressHost')                      ,
+choice(       choices: ['NO', 'VB']                                     , description: 'Select virtual evironment'          , name: 'virtualEnvironment')               ,
+choice(       choices: ['NO', 'YES']                                    , description: 'Check use generator or not'         , name: 'generator')                        ,
+choice(       choices: ['RADIO', 'CABEL']                               , description: 'Select method of signal reception'  , name: 'signalReceptionType')              ,
+choice(       choices: ['12 12 12 12 *','01 23 * * *']                  , description: 'Select trigger for start pipeline'  , name: 'typeOfTrigger')                    ,
+        [
+            $class: 'ParameterSeparatorDefinition'                 ,
+            name: 'TYPE_OF_TRIGGER'                                ,
+            sectionHeader: "Current trigger set: ${typeOfTrigger}" ,
+            separatorStyle: separatorStyle2                        ,
+            sectionHeaderStyle: sectionHeaderStyle2
+        ],  
+        [
+            $class: 'ParameterSeparatorDefinition'       ,
+            name: 'MAILING_SECTION'                      ,
+            sectionHeader: 'Mailing section'             ,
+            separatorStyle: separatorStyle               ,
+            sectionHeaderStyle: sectionHeaderStyle
+        ],
+booleanParam( defaultValue: false                   , description: 'radchenkods@ircoc.vrn.ru'       , name: 'RadchenkoDS') ,
+booleanParam( defaultValue: false                   , description: 'bizukovpe@ircoc.vrn.ru'         , name: 'BizyukovPE')  ,
+booleanParam( defaultValue: false                   , description: 'bolotovau@ircoc.vrn.ru'         , name: 'BolotovAU')   ,
+booleanParam( defaultValue: false                   , description: 'avdushinas@ircoc.vrn.ru'        , name: 'AvdyushinAS') ,
+booleanParam( defaultValue: false                   , description: 'sysoevds@ircoc.vrn.ru'          , name: 'SysoevDS')    ,
+        [
+            $class: 'ParameterSeparatorDefinition'       ,
+            name: 'PIPELINE_BUILD_STAGE_SECTION'         ,
+            sectionHeader: 'Pipeline build stage section',
+            separatorStyle: separatorStyle               ,
+            sectionHeaderStyle: sectionHeaderStyle
+        ],
+booleanParam( defaultValue: false        , description: 'use for update property of Pipeline'          , name: 'updatePipeine')         ,
+booleanParam( defaultValue: false        , description: 'deactivate/activate work with remote socket'  , name: 'remoteSocket')          ,        
+booleanParam( defaultValue: false        , description: 'deactivate/activate reboot System'            , name: 'rebootSystem')          ,   
+booleanParam( defaultValue: false        , description: 'deactivate/activate Test Complete'            , name: 'useTestComplete')       ,
+booleanParam( defaultValue: false        , description: 'deactivate/activate'                          , name: 'updateRepositoryStage') ,
+        [
+            $class: 'ParameterSeparatorDefinition'       ,
+            name: 'DEBUG_MODE_FOE_TESTERS'               ,
+            sectionHeader: "Debug mode for Testers"      ,
+            separatorStyle: separatorStyle               , 
+            sectionHeaderStyle: sectionHeaderStyle
+        ], 
+choice(       choices: ['''@GENERATOR'''                                                                                                                                                                    ,
+                        '''@KILL_ALL_PROVESS'''                                                                                                                                                             ,
+                        '''@CHECK_GENERATOR'''                                                                                                                                                              ,
+                        '''@INSTALL'''                                                                                                                                                                      ,
+                        '''@START_DISP_AND_SMOPA'''                                                                                                                                                         ,
+                        '''@SET_PROJECT_PARAMETERS'''                                                                                                                                                       ,
+                        '''@TAKE_VERSION_APPLICATION'''                                                                                                                                                     ,
+                        '''@SECTION_01'''                                                                                                                                                                   ,
+                        '''@SUBSECTION_01_01'''                                                                                                                                                             ,
+                        '''@C1798'''                                                                                                                                                                        ,
+                        '''@C1799'''                                                                                                                                                                        ,
+                        '''@C1801'''                                                                                                                                                                        ,
+                        '''@C1802'''                                                                                                                                                                        ,
+                        '''@C1803'''                                                                                                                                                                        ,
+                        '''@C1804'''                                                                                                                                                                        ,
+                        '''@C1805'''                                                                                                                                                                        ,
+                        '''@C1806'''                                                                                                                                                                        ,
+                        '''@SUBSECTION_01_02'''                                                                                                                                                             ,
+                        '''@C1871'''                                                                                                                                                                        ,
+                        '''@C1872'''                                                                                                                                                                        ,                        
+                        '''@C1873'''                                                                                                                                                                        ,                        
+                        '''@C1874'''                                                                                                                                                                        ,
+                        '''@C1875'''                                                                                                                                                                        ,
+                        '''@C1876'''                                                                                                                                                                        ,
+                        '''@C1877'''                                                                                                                                                                        ,
+                        '''@@SUBSECTION_01_03'''                                                                                                                                                            ,
+                        '''@C1812'''                                                                                                                                                                        ,
+                        '''@C1813'''                                                                                                                                                                        ,
+                        '''@C1814'''                                                                                                                                                                        ,
+                        '''@C1815'''                                                                                                                                                                        ,
+                        '''@SUBSECTION_01_04'''                                                                                                                                                             ,
+                        '''@C1807'''                                                                                                                                                                        ,
+                        '''@C1808'''                                                                                                                                                                        ,
+                        '''@C1809'''                                                                                                                                                                        ,
+                        '''@C1810'''                                                                                                                                                                        ,
+                        '''@C1811'''                                                                                                                                                                        ,
+                        '''@SUBSECTION_01_06'''                                                                                                                                                             ,
+                        '''@C1800'''                                                                                                                                                                        ,
+                        '''@C1824'''                                                                                                                                                                        ,
+                        '''@C1825'''                                                                                                                                                                        ,
+                        '''@SUBSECTION_01_07'''                                                                                                                                                             ,
+                        '''@C1821'''                                                                                                                                                                        ,
+                        '''@C1822'''                                                                                                                                                                        ,
+                        '''@SUBSECTION_01_08'''                                                                                                                                                             ,
+                        '''@C1828'''                                                                                                                                                                        ,
+                        '''@SUBSECTION_01_09'''                                                                                                                                                             ,
+                        '''@C1826'''                                                                                                                                                                        ,
+                        '''@C2657'''                                                                                                                                                                        ,
+                        '''@C2658'''                                                                                                                                                                        ,
+                        '''@SUBSECTION_01_10'''                                                                                                                                                             ,
+                        '''@C1827'''                                                                                                                                                                        ,
+                        '''@SECTION_02'''                                                                                                                                                                   ,
+                        '''@SUBSECTION_02_01'''                                                                                                                                                             ,
+                        '''@C1789'''                                                                                                                                                                        ,
+                        '''@SECTION_03'''                                                                                                                                                                   ,
+                        '''@SUBSECTION_03_02'''                                                                                                                                                             ,
+                        '''@C1784'''                                                                                                                                                                        ,
+                        '''@SECTION_10'''                                                                                                                                                                   ,
+                        '''@SUBSECT_10_01_01'''                                                                                                                                                             ,
+                        '''@C1662'''                                                                                                                                                                        ,
+                        '''@C1663'''                                                                                                                                                                        ,
+                        '''@C1664'''                                                                                                                                                                        ,
+                        '''@C1665'''                                                                                                                                                                        ,
+                        '''@C1666'''                                                                                                                                                                        ,
+                        '''@C1667'''                                                                                                                                                                        ,
+                        '''@C1668'''                                                                                                                                                                        ,
+                        '''@C1669'''                                                                                                                                                                        ,
+                        '''@SUBSECTION_10_01_02'''                                                                                                                                                          ,
+                        '''@C1673'''                                                                                                                                                                        ,
+                        '''@SUBSECTION_10_01_03'''                                                                                                                                                          ,
+                        '''@C2585'''                                                                                                                                                                        ,
+                        '''@C2589'''                                                                                                                                                                        ,
+                        '''@C2592'''                                                                                                                                                                        ,
+                        '''@C2593'''                                                                                                                                                                        ,
+                        '''@C2594'''                                                                                                                                                                        ,
+                        '''@C2595'''                                                                                                                                                                        ,
+                        '''@SUBSECTION_10_01_04'''                                                                                                                                                          ,
+                        '''@C2596'''                                                                                                                                                                        ,
+                        '''@C2602'''                                                                                                                                                                        ,
+                        '''@C2603'''                                                                                                                                                                        ,
+                        '''@C2603'''                                                                                                                                                                        ,                        
+                        '''@C2604'''                                                                                                                                                                        ,                        
+                        '''@C2605'''                                                                                                                                                                        ,                        
+                        '''@C2606'''                                                                                                                                                                        ,                        
+                        '''@EQUIPMENT_TO_MODEL'''                                                                                                                                                           ,
+                        '''@SUBSECTION_10_01_05'''                                                                                                                                                          ,                        
+                        '''@C2607'''                                                                                                                                                                        ,                        
+                        '''@C2608'''                                                                                                                                                                        ,                        
+                        '''@C2609'''                                                                                                                                                                        ,                        
+                        '''@C3561'''                                                                                                                                                                        ,                        
+                        '''@MODEL'''                                                                                                                                                                        ,                        
+                        '''@SUBSECTION_10_02_01'''                                                                                                                                                          ,                        
+                        '''@C145260'''                                                                                                                                                                      ,
+                        '''@C145261'''                                                                                                                                                                      ,
+                        '''@C145262'''                                                                                                                                                                      ,                                                
+                        '''@C145263'''                                                                                                                                                                      ,                                                
+                        '''@C145264'''                                                                                                                                                                      ,                                                
+                        '''@SUBSECTION_10_02_023'''                                                                                                                                                         ,                                                
+                        '''@C145265'''                                                                                                                                                                      ,                                              
+                        '''@C145266'''                                                                                                                                                                      ,                                                
+                        '''@C145267'''                                                                                                                                                                      ,                                                
+                        '''@C145268'''                                                                                                                                                                      ,                                                
+                        '''@C145269'''                                                                                                                                                                      ,                                                
+                        '''@SUBSECTION_10_02_03'''                                                                                                                                                          ,                                                
+                        '''@C145275'''                                                                                                                                                                      ,                                               
+                        '''@C145276'''                                                                                                                                                                      ,                                                
+                        '''@SUBSECTION_10_02_04'''                                                                                                                                                          ,                                                
+                        '''@C145270'''                                                                                                                                                                      ,                                                
+                        '''@C145271'''                                                                                                                                                                      ,                                                
+                        '''@C145272'''                                                                                                                                                                      ,                                                
+                        '''@C145273'''                                                                                                                                                                      ,                                                
+                        '''@C145274'''                                                                                                                                                                      ,                                                
+                        '''@SUBSECTION_10_02_05'''                                                                                                                                                          ,                                                
+                        '''@C145277'''                                                                                                                                                                      ,                                                
+                        '''@C145278'''                                                                                                                                                                      ,                                                
+                        '''@SUBSECTION_10_02_06'''                                                                                                                                                          ,                                                
+                        '''@C145279'''                                                                                                                                                                      ,                                            
+                        '''@C145280'''                                                                                                                                                                      ,
+                        '''@SUBSECTION_10_02_07'''                                                                                                                                                          ,                                                
+                        '''@C145281'''                                                                                                                                                                      ,                                                
+                        '''@C145282'''                                                                                                                                                                      ,                                                
+                        '''@C145283'''                                                                                                                                                                      ,                                                
+                        '''@SUBSECTION_10_02_08'''                                                                                                                                                          ,                                                
+                        '''@C145284'''                                                                                                                                                                      ,                                                
+                        '''@SUBSECTION_10_02_09'''                                                                                                                                                          ,                                                
+                        '''@SECTION_12'''                                                                                                                                                                   ,
+                        '''@SUBSECTION_12_01'''                                                                                                                                                             ,
+                        '''@C1648'''                                                                                                                                                                        ,                                                                                                                                                         ,
+                        '''StartOfNightTests|killAllProcess'''                                                                                                                                              ,
+                        '''StartOfNightTests|setProjectParametrs'''                                                                                                                                         ,
+                        '''StartOfNightTests|commonLaunchPowerShell_1_(Установка программы)'''                                                                                                              ,
+                        '''StartOfNightTests|dispAndSmopaStart_2_1'''                                                                                                                                       ,
+                        '''StartOfNightTests|takeVersionOnApplication'''                                                                                                                                    ,
+                        '''StartOfNightTests|checkAvailabilityGenerator_(Проверка подключения генератора)'''                                                                                                ,
+                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1798_(Создание задания на диапазоны перестройки частоты)'''                                                      ,
+                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1799_(Редактирование задания на диапазоны перестройки частоты)'''                                                ,
+                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1800_(Загрузка задания на диапазоны перестройки частоты из файла)'''                                             ,
+                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1801_(Удаление задания на диапазоны перестройки частоты)'''                                                      ,
+                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1802_(Удаление диапазона перестройки частоты из задания)'''                                                      ,
+                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1803_(Сохранение задания на диапазоны перестройки частоты в файл)'''                                             ,
+                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1804_(Создание задания с большим количеством диапазонов)'''                                                      ,
+                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1805_(Создание задания с пересекающимися диапазонами)'''                                                         ,
+                        '''test_01_panoramicAnalysis|01)_workOnTheTaskForSpectrum|english|C1806_(Cоздание диапазона с параметрами Fmin>Fmax)'''                                                             ,
+                        '''test_01_panoramicAnalysis|02)_retuningTheMarkerFrequencyInSpectrumMode|english|C1871_(Создание задания на диапазоны перестройки частоты)'''                                      ,
+                        '''test_01_panoramicAnalysis|02)_retuningTheMarkerFrequencyInSpectrumMode|english|C1872_(Редактирование задания на диапазоны перестройки частоты)'''                                ,
+                        '''test_01_panoramicAnalysis|02)_retuningTheMarkerFrequencyInSpectrumMode|english|C1873_(Удаление задания на диапазоны перестройки частоты)'''                                      ,
+                        '''test_01_panoramicAnalysis|02)_retuningTheMarkerFrequencyInSpectrumMode|english|C1874_(Удаление диапазона перестройки частоты из задания)'''                                      ,                        
+                        '''test_01_panoramicAnalysis|02)_retuningTheMarkerFrequencyInSpectrumMode|english|C1875_(Создание задания с большим количеством диапазонов)'''                                      ,
+                        '''test_01_panoramicAnalysis|02)_retuningTheMarkerFrequencyInSpectrumMode|english|C1876_(Создание задания с пересекающимися диапазонами)'''                                         ,                        
+                        '''test_01_panoramicAnalysis|02)_retuningTheMarkerFrequencyInSpectrumMode|english|C1877_(Cоздание диапазона с параметрами Fmin>Fmax)'''                                             ,  
+                        '''test_01_panoramicAnalysis|03)_reTuningMarkerFrequencyInSpectrumMode|english|C1812_(Перестройка частоты маркера по клику)'''                                                      ,                          
+                        '''test_01_panoramicAnalysis|03)_reTuningMarkerFrequencyInSpectrumMode|english|C1813_(Перестройка частоты маркера путем ввода значения частоты в поле "Настройка частоты")'''       , 
+                        '''test_01_panoramicAnalysis|03)_reTuningMarkerFrequencyInSpectrumMode|english|C1814_(Перестройка маркера на частоту с наибольшим уровнем)'''                                       , 
+                        '''test_01_panoramicAnalysis|03)_reTuningMarkerFrequencyInSpectrumMode|english|C1815_(Изменение порога с помощью мыши)'''                                                           , 
+                        '''test_01_panoramicAnalysis|04)_reTuningMarkerFrequencyInMeasurementMode|english|C1807_(Перестройка частоты маркера по клику)'''                                                   , 
+                        '''test_01_panoramicAnalysis|04)_reTuningMarkerFrequencyInMeasurementMode|english|C1808_(Перестройка частоты маркера путем ввода значения частоты в поле "Настройка частоты")'''    , 
+                        '''test_01_panoramicAnalysis|04)_reTuningMarkerFrequencyInMeasurementMode|english|C1809_(Перестройка маркера на частоту с наибольшим уровнем)'''                                    , 
+                        '''test_01_panoramicAnalysis|04)_reTuningMarkerFrequencyInMeasurementMode|english|C1810_(Перемещение маркера с помощью клавиатуры)'''                                               , 
+                        '''test_01_panoramicAnalysis|04)_reTuningMarkerFrequencyInMeasurementMode|english|C1811_(Перемещение дополнительного маркера с помощью мыши)'''                                     ,                       
+                        '''test_01_panoramicAnalysis|06)_displaySpectrogramInSpectrumWindowOfSpectrumMode|english|С1824_(Аппаратные методы отображения спектра.)'''                                         ,                        
+                        '''test_01_panoramicAnalysis|06)_displaySpectrogramInSpectrumWindowOfSpectrumMode|english|C1825_(Отображение накопленного спектра.)'''                                              ,  
+                        '''test_01_panoramicAnalysis|07)_displaySpectMeasurementWindowMeasurementMode|english|C1821_(Аппаратные методы отображения спектра.)'''                                             , 
+                        '''test_01_panoramicAnalysis|07)_displaySpectMeasurementWindowMeasurementMode|english|C1822_(Отображение накопленного спектра.)'''                                                  , 
+                        '''test_01_panoramicAnalysis|09)_ControlOfAttenuators|english|C1826_(Управление аттенюаторами с шагом 10дБ режим Спектр)'''                                                         ,                         
+                        '''test_01_panoramicAnalysis|09)_ControlOfAttenuators|english|C2657_(Управление аттенюаторами с шагом 10дБ режим Измерение)'''                                                      ,            
+                        '''test_01_panoramicAnalysis|09)_ControlOfAttenuators|english|C2658_(Управление аттенюаторами с шагом 10дБ режим Панорама)'''                                                       ,            
+                        '''test_01_panoramicAnalysis|10)_amplifierControl|english|C1827_(Управление усилителями)'''                                                                                         ,                                    
+                        '''test_02_adaptationToSurroundingRadioEnvironment|01)_safeAccumulatedSpectrum|C1789_(Сохранение и загрузка накопленного спектра)'''                                                ,                        
+                        '''test_03_detectionOfChangesInRadioEnvironment|02)_searchWithScan|C1784_(Поиск с обзором обнаруженных каналов)'''                                                                  ,
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1662_(Измерение частоты (по временной выборке)'''                                        ,                        
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1663_(Измерение частоты (максимум) с помощью генератора.)'''                             ,                        
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1664_(Измерение частоты (оценка частоты ЧМ) с помощью генератора.)'''                    ,                        
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1665_(Измерение частоты (авто) с помощью генератора)'''                                  ,                        
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1666_(Измерение частоты (центральная частота ШПС) с помощью генератора)'''               ,                                                
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1667_(	Измерение частоты (ММС) с помощью генератора.)'''                               ,                                                
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1668_(Измерение частоты (ФМн) с помощью генератора)'''                                   ,                
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|01)_ measurementFrequency|C1669_(Измерение частоты (ЧМн) с помощью генератора)'''                                   ,                        
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|02)_checkAccumulationDeviation|C1673_(Накопление данных о девиации с помощью генератора.)'''                        ,                        
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|03)_measurementFieldStrength|C2585_(Измерение напряженности (пиковый уровень)'''                                    ,                        
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|03)_measurementFieldStrength|C2589_(Измерение напряженности (энергетический)'''                                     ,                        
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|03)_measurementFieldStrength|C2592_(	Измерение напряженности (детектор средних значений)'''                      ,                        
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|03)_measurementFieldStrength|C2593_(Измерение напряженности (среднеквадратический детектор)'''                      ,                        
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|03)_measurementFieldStrength|C2594_(Измерение напряженности (квазипиковый детектор)'''                              ,                        
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|03)_measurementFieldStrength|C2595_(Измерение напряженности (пиковый детектор)'''                                   ,                        
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|04)_PMM(powerFluxDensity)|C2596_(ППМ (пиковый уровень)'''                                                           ,                        
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|04)_PMM(powerFluxDensity)|C2602_(ППМ (энергетический)'''                                                            ,                        
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|04)_PMM(powerFluxDensity)|C2603_(ППМ (среднеквадратический детектор)'''                                             ,                                                
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|04)_PMM(powerFluxDensity)|C2604_(ППМ (детектор средних значений)'''                                                 ,                                                
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|04)_PMM(powerFluxDensity)|C2605_(ППМ (квазипиковый детектор)'''                                                     ,                                                
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|04)_PMM(powerFluxDensity)|C2606_(ППМ (пиковый детектор)'''                                                          ,                                                
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|05)_ measurementBand|C2607_(X дБ (накопленный спектр)'''                                                            ,                                                
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|05)_ measurementBand|C2608_(Бета/2)'''                                                                              ,                                                
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|05)_ measurementBand|C2609_(Измерение полосы в режиме "Спектр")'''                                                  ,                                                                        
+                        '''test_10_measurementOfRadioSignalParameters|01)_withGenerator|05)_ measurementBand|C3561_(	X дБ (усредненный спектр)'''                                                        ,                                                                        
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|01)_deviation|C145260_(Девиация 0.5 кГц Частота 500 МГц Спектроскоп 12.5 кГц)'''                                        ,                                                                                                
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|01)_deviation|C145261_(Девиация 5 кГц Частота 500 МГц Спектроскоп 25 кГц)'''                                            ,                                                                                                
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|01)_deviation|C145262_(Девиация 50 кГц Частота 500 МГц Спектроскоп 250.98 кГц)'''                                       ,                                                                                                
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|01)_deviation|C145263_(Девиация 100 кГц Частота 500 МГц Спектроскоп 250.98 кГц)'''                                      ,                                                                                                
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|01)_deviation|C145264_(Девиация 130 кГц Частота 500 МГц Спектроскоп 320 кГц)'''                                         ,                                                                                                
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|02)_coefficientAM|C145265_(Коэффициент 0.1 Частота 500 МГц Спектроскоп 6.25 кГц)'''                                     ,                                                                                                
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|02)_coefficientAM|C145266_(Коэффициент 0.3 Частота 500 МГц Спектроскоп 6.25 кГц)'''                                     ,                                                                                                
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|02)_coefficientAM|C145267_(Коэффициент 0.5 Частота 500 МГц Спектроскоп 6.25 кГц)'''                                     ,                                                                                                
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|02)_coefficientAM|C145268_(Коэффициент 0.7 Частота 500 МГц Спектроскоп 6.25 кГц)'''                                     ,                                                                                                
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|02)_coefficientAM|C145269_(Коэффициент 0.9 Частота 500 МГц Спектроскоп 6.25 кГц)'''                                     ,                                                                                                
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|03)_subcurrier|C145275_(Поднесущая 19 кГц Частота 100 МГц Спектроскоп 320 кГц)'''                                       ,                                                                                                                        
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|03)_subcurrier|C145276_(Поднесущая 31.25 кГц Частота 100 МГц Спектроскоп 320 кГц)'''                                    ,  
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|04)_frequencySeparationFSK|C145270_(Скорость 0.11 кБод Девиация 0.22 кГц Частота 500 МГц Спектроскоп 6.25 кГц)'''       ,  
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|04)_frequencySeparationFSK|C145271_(Скорость 0.25 кБод Девиация 2.5 кГц Частота 500 МГц Спектроскоп 12.5 кГц)'''        ,  
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|04)_frequencySeparationFSK|C145272_(Скорость 1.25 кБод Девиация 25 кГц Частота 500 МГц Спектроскоп 100 кГц)'''          ,  
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|04)_frequencySeparationFSK|C145273_(Скорость 1.25 кБод Девиация 50 кГц Частота 500 МГц Спектроскоп 250.98 кГц)'''       ,  
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|04)_frequencySeparationFSK|C145274_(Скорость 2.5 кБод Девиация 100 кГц Частота 500 МГц Спектроскоп 320 кГц)'''          ,  
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|05)_modulationRateGMSK|C145277_(Скорость 2.4 кБод Частота 500 МГц Спектроскоп 6.25 кГц)'''                              ,  
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|05)_modulationRateGMSK|C145278_(Скорость 1000 кБод Частота 500 МГц Спектроскоп 2000 кГц)'''                             ,  
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|06)_modulationRateQPSK|C145279_(Скорость 0.1 кБод Частота 500 МГц Спектроскоп 6.25 кГц)'''                              ,  
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|06)_modulationRateQPSK|C145280_(Скорость 23 кБод Частота 500 МГц Спектроскоп 100 кГц)'''                                ,  
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|07)_modulationRateFSK|C145281_(Скорость 0.1 кБод Девиация 0.22 кГц Частота 500 МГц Спектроскоп 6.25 кГц)'''             ,  
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|07)_modulationRateFSK|C145282_(Скорость 50 кБод Девиация 100 кГц Частота 500 МГц Спектроскоп 320 кГц)'''                ,                          
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|07)_modulationRateFSK|C145283_(Скорость 0.11 кБод Девиация 0.22 кГц Частота 500 МГц Спектроскоп 6.25 кГц)'''            ,  
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|08)_frequencyQPSK|C145284_(Частота 500 МГц Спектроскоп 6.25 кГц)'''                                                     ,  
+                        '''test_10_measurementOfRadioSignalParameters|02)_withModel|09)_frequencyFSK|C145285_(Частота 500 МГц Спектроскоп 25 кГц)'''                                     
+                        ],                  
+                                           description: 'Select Test Complet Test Item'                , name: 'testcompleteTestItem')          ,
+choice(       choices: ['NO', 'YES']     , description: 'Activate debug mode Test Items'               , name: 'debugMode')                                            
+             
+    ])
+])
+
+pipeline{
+
+    agent {
+        label "${slaveAgent}"
+    }
+    /*triggers{ cron('H/5 * * * *') }*/
+    /*triggers{ cron('20 13 * * *') }    */
+    triggers{ cron("${typeOfTrigger}") }
+    stages {
+        
+        stage('RebootSystem'){
+            when {
+                expression { params.rebootSystem == true }
+                expression { params.updatePipeine == false }
+            }            
+           steps{
+                bat label: "${slaveAgent}", script: 'shutdown -r -f -t 2'
+                sleep(120)  
+            }
+        }
+        stage('Sleep'){
+            when {
+                expression { params.rebootSystem == true }
+                expression { params.updatePipeine == false }
+            }            
+           steps{
+                sleep(120)  
+            }
+        }
+        
+        stage('SetParameters') {
+            when {
+                expression { params.updatePipeine == false }
+            }              
+            environment {
+                LISTBUILD                                      =    ""
+                LISTMAIL                                       =    "kamyninsa@ircoc.vrn.ru,"
+                DATA                                           =    ""                
+                ALLPASS                                        =    "[Testing]\r\n"
+                ProjectParameters                              =    ";defaultVersionOfTheApplication = PA    || PAI       || PPK           \r\n"+   
+                                                                    "defaultVersionOfTheApplication=${defaultVersionOfTheApplication}\r\n"      +
+                                                                    ";defaultVersionOfTheSoftware    = M2    || IS        || RP3M          \r\n"+   
+                                                                    "defaultVersionOfTheSoftware=${defaultVersionOfTheSoftware}\r\n"            +
+                                                                    ";defaultTypeOfEquipment         = USB   || ETHERNET                   \r\n"+   
+                                                                    "defaultTypeOfEquipment=${defaultTypeOfEquipment}\r\n"                      +
+                                                                    ";defaultVersionOfModel          = IS    || ARGAMAK_+                  \r\n"+
+                                                                    "defaultVersionOfModel=${defaultVersionOfModel}\r\n"                        +
+                                                                    ";addressHost                    = NO    || YES                        \r\n"+
+                                                                    "addressHost=${addressHost}\r\n"                                            +
+                                                                    ";virtualEnvironment             = NO    || YES                        \r\n"+
+                                                                    "virtualEnvironment=${virtualEnvironment}\r\n"                              +                                          
+                                                                    ";generator                      = NO    || YES                        \r\n"+
+                                                                    "generator=${generator}\r\n"                                                +
+                                                                    ";signalReceptionType            = RADIO || CABEL                      \r\n"+
+                                                                    "signalReceptionType=${signalReceptionType}\r\n"                                                           
+            }
+            steps {
+                script {
+                    
+                    ALLPASS           = "${ALLPASS}" 
+                    ProjectParameters = "${ProjectParameters}"
+                    echo "${ProjectParameters}"
+                    if("${test_01_PanoramicAnalysis}" == "true") {
+                      ALLPASS = "${ALLPASS}"                                        +
+                                ";section01                      = NO  || YES\r\n"  +
+                                "section01=YES\r\n"
+                    } else {
+                      ALLPASS = "${ALLPASS}"                                        +
+                                ";section01                      = NO  || YES\r\n"  +
+                                "section01=NO\r\n"        
+                    }
+                    
+                    // echo "${ALLPASS}"
+                    if("${test_02_adaptationToSurroundingRadioEnvironment}" == "true") {
+                      ALLPASS = "${ALLPASS}"                                        +
+                                ";section02                      = NO  || YES\r\n"  +
+                                "section02=YES\r\n"
+                    } else {
+                      ALLPASS = "${ALLPASS}"                                        +
+                                ";section02                      = NO  || YES\r\n"  +
+                                "section02=NO\r\n"        
+                    }
+                    // echo "${ALLPASS}"
+                    if("${test_03_detectionOfChangesInRadioEnvironment}" == "true") {
+                      ALLPASS = "${ALLPASS}"                                        +
+                                ";section03                      = NO  || YES\r\n"  +
+                                "section03=YES\r\n"
+                    } else {
+                      ALLPASS = "${ALLPASS}"                                        +
+                                ";section03                      = NO  || YES\r\n"  +
+                                "section03=NO\r\n"        
+                    }
+                    // echo "${ALLPASS}"
+                    if("${test_10_measurementOfRadioSignalParameters}" == "true") {
+                      ALLPASS = "${ALLPASS}"                                        +
+                                ";section10                      = NO  || YES\r\n"  +                    
+                                "section10=YES\r\n"
+                    } else {
+                      ALLPASS = "${ALLPASS}"                                        +
+                                ";section10                      = NO  || YES\r\n"  +                      
+                                "section10=NO\r\n"        
+                    }
+                    // echo "${ALLPASS}"
+                    if("${test_12_userInterfaceSettings}" == "true") {
+                      ALLPASS = "${ALLPASS}"                                        +
+                                ";section12                      = NO  || YES\r\n"  +                      
+                                "section12=YES\r\n"
+                    } else {
+                      ALLPASS = "${ALLPASS}"                                        +
+                                ";section12                      = NO  || YES\r\n"  +                      
+                                "section12=NO\r\n"        
+                    }
+                    // echo "${ALLPASS}"
+                    if("${debugMode}" == "YES") {
+                      ALLPASS = "${ALLPASS}"                                                                    +
+                                ";debugNameOfTag                 = @C145260 || @SUNSECTION_10_01 || etc\r\n"    +                      
+                                "debugNameOfTag=${testcompleteTestItem}\r\n"
+                    } else {
+                      ALLPASS = "${ALLPASS}"                                                                    +
+                                ";debugNameOfTag                 = @C145260 || @SUNSECTION_10_01 || etc\r\n"    +                    
+                                "debugNameOfTag=@C145260\r\n"        
+                    }                    
+                    
+                    echo "${ALLPASS}"
+                    
+                    //WorkWithData
+                    def date = new Date()
+                    def formattedDate = date.format("dd_MM_yyy")
+                    DATA = formattedDate
+                    
+                    //WorkWithBuildURL
+                    LISTBUILD = "${BUILD_URL}"
+                    LISTBUILD = "${LISTBUILD}" + "TestComplete/"
+                    echo "${LISTBUILD}"
+                    
+                    //WorkWithMailAddress
+                    LISTMAIL = "${LISTMAIL}" 
+                    if("${RadchenkoDS}" == "true") {
+                      LISTMAIL    = "${LISTMAIL}"    + "radchenkods@ircoc.vrn.ru,"
+                    }
+                    if("${BizyukovPE}" == "true") {
+                      LISTMAIL    = "${LISTMAIL}"    + "bizukovpe@ircoc.vrn.ru,"
+                    }
+                    if("${BolotovAU}" == "true") {
+                      LISTMAIL    = "${LISTMAIL}"    + "bolotovau@ircoc.vrn.ru,"
+                    }
+                    if("${AvdyushinAS}" == "true") {
+                      LISTMAIL    = "${LISTMAIL}"    + "avdushinas@ircoc.vrn.ru,"
+                    }
+                    if("${SysoevDS}" == "true") {
+                      LISTMAIL    = "${LISTMAIL}"    + "sysoevds@ircoc.vrn.ru,"
+                    }                    
+                    echo "${LISTMAIL}"
+                }
+            }
+        }
+        
+        stage('updateRepository'){
+            when {
+                expression { params.updatePipeine == false }
+                expression { params.updateRepositoryStage == true }
+            }               
+            steps{
+                bat label: "${slaveAgent}", script: 'C:\\Prog\\BatAndShell\\workWithRepository\\updateRepository.bat'
+                //bat label: "${slaveAgent}", script: "cd c:\\Prog && hg pull -u http://gserver.ircoc.vrn.ru/hg/progress/ && hg update -C"
+            }    
+        }
+        
+        
+        /////////////////////////
+        //stage('writeMailParameters'){
+        //    steps {
+        //        writeFile file: 'C:\\Prog\\BatAndShell\\workWithMailinigReports\\addressesNotificationComes.txt',
+        //        text:   "$MAILADDRESS"
+        //    }
+        //}
+        /////////////////////////
+        
+        
+        stage('writeTestCompleteParameters'){
+            when {
+                expression { params.updatePipeine == false }
+            }               
+            steps {
+                    writeFile file: 'C:\\Prog\\iniParameters\\SelectFileforStartTest.ini',
+                    text:   "[Root]\r\n"                                                 +
+                            ";section to determine the launch of the project        \r\n"+
+                            "[Jenkins]\r\n"                                              +
+                            "status=YES\r\n"                                         
+                            
+                    writeFile file: 'C:\\Prog\\iniParameters\\TestParamertJenkins.ini',
+                    text:   "[Root]\r\n"                                                 +
+                            "\r\n"                                                       +
+                            "[Settings]\r\n"                                             +
+                            "$ProjectParameters"                                         +
+                            "\r\n"                                                       +
+                            "$ALLPASS"                                                   +
+                            "\r\n"                                                       +
+                            "[Jenkins]\r\n"                                              +
+                            ";runJenkins                      = NO  || YES\r\n"          +
+                            "runJenkins=YES\r\n"                                         +
+                            ";debugMode                       = NO  || YES\r\n"          +
+                            "debugMode=$debugMode"                                                 
+                            
+                    writeFile file: 'C:\\Prog\\BatAndShell\\workWithProgramDeployment\\DownloadAndUnzipARKSoftJenkins.ps1',
+                    text:   "\$webclient = new-object System.Net.WebClient\r\n"                                                                                             +
+                            "\$credCache = new-object System.Net.CredentialCache\r\n"                                                                                       + 
+                            "\$outfolder = \"C:\\downloadARKSoft\\\"\r\n"                                                                                                   +                               
+                            "\$outfile = \$( \$outfolder + \"ARKSoft.zip\" )\r\n"                                                                                           +
+                            "\$url = \"http://teamcity.ircoc.vrn.ru:8080/repository/downloadAll/Develop29011_BuildARKSoft/${versionARKSoft}\"\r\n"                    +
+                            "\$creds = new-object System.Net.NetworkCredential(\"kamyninsa\",\"12345\");\r\n"                                                               +
+                            "\$credCache.Add(\$url, \"Basic\", \$creds)\r\n"                                                                                                +                            
+                            "\$webclient.Credentials = \$credCache\r\n"                                                                                                     +        
+                            "\$webClient.DownloadFile(\$url, \$outfile)\r\n"                                                                                                +        
+                            "Expand-Archive -Path \$outfile -destinationpath \$outfolder\r\n"                                                                                                                     
+                            }
+        }
+        
+        
+        stage('switch ON remote power socket'){
+            when {
+                expression { params.remoteSocket == true }
+                expression { params.updatePipeine == false }
+            }
+            steps{
+                script {
+                    if("${remoteSocket}" == "true"){
+                        //bat label: "${slaveAgent}", script: 'C:\\Prog\\BatAndShell\\workWithGenerator\\startPowerGenerator.bat'        
+                        bat label: "${slaveAgent}",  script: '''cd /d "C:\\Program Files\\Power Manager"
+                                                                start pm.exe
+                                                                ping 127.0.0.1 -n 5 -w 100
+                                                                ping 127.0.0.1 -n 5 -w 100
+                                                                start pm.exe -on -Generator -Socket4
+                                                                ping 127.0.0.1 -n 5 -w 100
+                                                                start pm.exe -on -Generator -Socket3
+                                                                ping 127.0.0.1 -n 5 -w 100
+                                                                taskkill /im:pm.exe
+                                                                ping 127.0.0.1 -n 5 -w 100'''
+                    } else {
+                        bat label: "${slaveAgent}", script: 'echo \'Do not switch ON remote power socket because socket parametr off\''        
+                    }
+                }
+                
+            }    
+        }        
+        
+        
+        stage('running tests in TestComplete'){
+            when {
+                expression { params.useTestComplete == true }
+                expression { params.updatePipeine == false }
+                expression { params.debugMode == "NO" } 
+            }               
+            steps{
+                testcompletetest suite: 'C:\\Prog\\Spectr.pjs',
+                useTCService: true,
+                userName: 'cont',
+                userPassword: 'user'
+            }
+        }
+
+
+        stage('running testItems in TestComplete'){
+            when {
+                expression { params.useTestComplete == true }                
+                expression { params.updatePipeine == false }
+                expression { params.debugMode == "YES" }                
+            }               
+            steps{
+                testcompletetest suite: 'C:\\Prog\\Spectr.pjs',
+                useTCService: true,
+                userName: 'cont',
+                userPassword: 'user',
+                launchType: 'lcItem',
+                project: 'Spectr',
+                test: "Scenarios|${testcompleteTestItem}"
+            }
+        }        
+        
+        
+        stage('switch OFF remote power socket'){
+            when {
+                expression { params.remoteSocket == true }
+                expression { params.updatePipeine == false }
+            }            
+            steps{
+                script {
+                    if("${remoteSocket}" == "true"){
+                        //bat label: "${slaveAgent}", script: 'C:\\Prog\\BatAndShell\\workWithGenerator\\shutdownPowerGenerator.bat'        
+                        bat label: "${slaveAgent}",  script: '''cd /d "C:\\Program Files\\Power Manager"
+                                                                start pm.exe
+                                                                ping 127.0.0.1 -n 5 -w 100
+                                                                ping 127.0.0.1 -n 5 -w 100
+                                                                start pm.exe -off -Generator -Socket4
+                                                                ping 127.0.0.1 -n 5 -w 100
+                                                                start pm.exe -off -Generator -Socket3
+                                                                ping 127.0.0.1 -n 5 -w 100
+                                                                taskkill /im:pm.exe
+                                                                ping 127.0.0.1 -n 5 -w 100'''                        
+                    } else {
+                        bat label: "${slaveAgent}", script: 'echo \'Do not switch OFF remote power socket because socket parametr off\''        
+                    }
+                }
+                
+            }    
+        }
+        
+    }
+    
+    post {
+        always {
+            emailext body: '$DEFAULT_CONTENT'                                           +
+            "\r\n"                                                                      +
+            "С результатами ночного тестирования "                                      +    
+            "${DATA} ( ${defaultTypeOfEquipment}_${defaultVersionOfTheSoftware} )"      +  
+            " можно ознакомиться по адресу:\r\n "                                       +
+            " - ${LISTBUILD}"                                                           +
+            "\r\n\r\n"                                                                  +
+            "Результаты за другие числа можно увидеть:\r\n"                             +
+            " - ${JOB_URL}"                                                             +
+        "\r\n\r\n"                                                                      +
+            "Для этого необходимо:\r\n"                                                 +
+            " - перейти в проект TestCompleteAutoNight\r\n"                             +
+            " - выбрать интересующую сборкую (например: #26 Jun 25, 2019 1:58 PM)\r\n"  +
+            " - открыть вкладку TestComplete Test Results\r\n",
+            subject: '$DEFAULT_SUBJECT',
+            to: '$DEFAULT_RECIPIENTS' +
+            "${LISTMAIL}"
+        }
+    }
+    
+}
